@@ -3,13 +3,65 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <ncurses.h>
+#include <string.h>
 #include "includes/Types.h"
 #include "includes/Snake.h"
 
-void Input(int &gameLoop, SDirection &keyPressed)
+typedef struct _WIN_BORDER_struct
+{
+  chtype ls, rs, ts, bs,
+      tl, tr, bl, br;
+} WIN_BORDER;
+
+typedef struct _WIN_struct
+{
+
+  int startx, starty;
+  int height, width;
+  WIN_BORDER border;
+} WIN;
+
+void InitScreen(WIN *win, int &height, int &width)
 {
   initscr();
+  cbreak();
   noecho();
+
+  win->height = height;
+  win->width = width;
+  win->starty = (LINES - win->height) / 2;
+  win->startx = (COLS - win->width) / 2;
+
+  win->border.ls = '|';
+  win->border.rs = '|';
+  win->border.ts = '-';
+  win->border.bs = '-';
+  win->border.tl = '+';
+  win->border.tr = '+';
+  win->border.bl = '+';
+  win->border.br = '+';
+
+  int x = win->startx;
+  int y = win->starty;
+
+  // --- Box
+  // Corners
+  mvaddch(y, x, win->border.tl);
+  mvaddch(y, x + width, win->border.tr);
+  mvaddch(y + height, x, win->border.bl);
+  mvaddch(y + height, x + width, win->border.br);
+  // Vertical lines
+  mvhline(y, x + 1, win->border.ts, width - 1);
+  mvhline(y + height, x + 1, win->border.bs, width - 1);
+  // Horizontal lines
+  mvvline(y + 1, x, win->border.ls, height - 1);
+  mvvline(y + 1, x + width, win->border.rs, height - 1);
+
+  refresh();
+}
+
+void Input(bool &gameLoop, SDirection &keyPressed)
+{
   int ch;
   while (gameLoop == 1)
   {
@@ -17,9 +69,7 @@ void Input(int &gameLoop, SDirection &keyPressed)
     switch (ch)
     {
     case 'q':
-      std::cout << "Quit" << std::endl;
-      endwin();
-      gameLoop = 0;
+      gameLoop = FALSE;
       break;
     case 'w':
       keyPressed = UP;
@@ -41,17 +91,24 @@ void Input(int &gameLoop, SDirection &keyPressed)
 
 int main()
 {
-  int gameLoop = 1;
+  bool gameLoop = TRUE;
+  int SCREEN_HEIGHT = 15;
+  int SCREEN_WIDTH = 35;
+  WIN win;
+
   SDirection keyPressed = STOP;
+  Snake snake;
+  snake.sDir = &keyPressed;
+
+  InitScreen(&win, SCREEN_HEIGHT, SCREEN_WIDTH);
+  snake.x = COLS / 2;
+  snake.y = LINES / 2;
 
   std::future<void> getInput = std::async(Input, std::ref(gameLoop), std::ref(keyPressed));
-  Snake snake;
-
-  while (gameLoop == 1)
+  while (gameLoop == TRUE)
   {
-    // Draw
-    // Move
-    snake.move(keyPressed);
-    // Input
+    snake.move();
   }
+
+  endwin();
 }

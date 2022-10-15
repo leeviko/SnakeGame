@@ -2,23 +2,38 @@
 #include <unistd.h>
 #include "includes/Types.h"
 #include "includes/Snake.h"
+#include <ncurses.h>
+#include <chrono>
+#include <thread>
 
 Snake::Snake()
 {
   x = 0;
   y = 0;
   length = 1;
-  sDir = STOP;
+  sDir;
 }
 
-void Snake::move(SDirection dir)
+void Snake::move()
 {
-  sDir = dir;
-  sleep(1);
-  std::cout << "Move to: " << sDir << std::endl;
+  switch (*sDir)
+  {
+  case UP:
+    this->y--;
+    break;
+  case DOWN:
+    this->y++;
+    break;
+  case LEFT:
+    this->x--;
+    break;
+  case RIGHT:
+    this->x++;
+    break;
+  default:
+    break;
+  }
+  std::this_thread::sleep_for(std::chrono::milliseconds(250));
+  mvprintw(this->y, this->x, "%c", 'O');
+  refresh();
 }
-
-int Snake::getDirection()
-{
-  return sDir;
-};
