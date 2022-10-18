@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <ncurses.h>
 #include <string.h>
+#include <random>
 #include "includes/Types.h"
 #include "includes/Snake.h"
 
@@ -89,6 +90,24 @@ void Input(bool &gameLoop, SDirection &keyPressed)
   };
 }
 
+void SpawnFruit(WIN *win, int &height, int &width)
+{
+  std::random_device myRandomDevice;
+  unsigned seedY = myRandomDevice();
+  unsigned seedX = myRandomDevice();
+
+  std::default_random_engine randGenY(seedY);
+  std::default_random_engine randGenX(seedX);
+
+  std::uniform_int_distribution<int> randomYPos(win->starty + 1, win->starty + height - 1);
+  std::uniform_int_distribution<int> randomXPos(win->startx, win->startx + width);
+
+  int xPos = randomXPos(randGenY);
+  int yPos = randomYPos(randGenX);
+
+  mvprintw(yPos, xPos, "%c", 'X');
+}
+
 int main()
 {
   bool gameLoop = TRUE;
@@ -105,6 +124,7 @@ int main()
   snake.y = LINES / 2;
 
   std::future<void> getInput = std::async(Input, std::ref(gameLoop), std::ref(keyPressed));
+  // SpawnFruit(&win, SCREEN_HEIGHT, SCREEN_WIDTH);
 
   while (gameLoop == TRUE)
   {
