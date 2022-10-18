@@ -16,6 +16,9 @@ Snake::Snake()
 
 void Snake::move()
 {
+  int prevX = this->x;
+  int prevY = this->y;
+
   switch (*sDir)
   {
   case UP:
@@ -34,6 +37,9 @@ void Snake::move()
     break;
   }
   std::this_thread::sleep_for(std::chrono::milliseconds(250));
+
+  mvprintw(prevY, prevX, "%c", ' '); // Clear previous position
   mvprintw(this->y, this->x, "%c", 'O');
+
   refresh();
 }

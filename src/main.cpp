@@ -92,8 +92,8 @@ void Input(bool &gameLoop, SDirection &keyPressed)
 int main()
 {
   bool gameLoop = TRUE;
-  int SCREEN_HEIGHT = 15;
-  int SCREEN_WIDTH = 35;
+  int SCREEN_HEIGHT = 16;
+  int SCREEN_WIDTH = 36;
   WIN win;
 
   SDirection keyPressed = STOP;
@@ -105,8 +105,20 @@ int main()
   snake.y = LINES / 2;
 
   std::future<void> getInput = std::async(Input, std::ref(gameLoop), std::ref(keyPressed));
+
   while (gameLoop == TRUE)
   {
+    if (snake.x < win.startx || snake.x > win.startx + SCREEN_WIDTH)
+    {
+      gameLoop = FALSE;
+      break;
+    }
+    else if (snake.y < win.starty || snake.y > win.starty + SCREEN_HEIGHT)
+    {
+      gameLoop = FALSE;
+      break;
+    }
+
     snake.move();
   }
 
