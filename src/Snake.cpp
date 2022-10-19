@@ -1,10 +1,6 @@
-#include <iostream>
-#include <unistd.h>
-#include "includes/Types.h"
-#include "includes/Snake.h"
-#include <ncurses.h>
 #include <chrono>
 #include <thread>
+#include "includes/Game.h"
 
 Snake::Snake()
 {

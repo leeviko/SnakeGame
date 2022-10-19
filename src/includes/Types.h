@@ -1,3 +1,5 @@
+#pragma once
+
 enum SDirection
 {
   STOP = 0,
