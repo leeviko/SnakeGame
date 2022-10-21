@@ -9,8 +9,6 @@
 #include <random>
 
 #include "Types.h"
-#include "Snake.h"
-
 typedef struct _WIN_BORDER_struct
 {
   chtype ls, rs, ts, bs,
@@ -30,11 +28,14 @@ public:
   WIN win;
   SDirection keyPressed;
   bool gameLoop;
+  int score;
 
   Game();
   void m_InitWindow(WIN *win, int height, int width);
   void m_Start();
   void m_End();
   void m_Input(bool &gameLoop, SDirection &keyPressed);
-  void m_SpawnFruit(WIN *win, int &height, int &width);
+  static void m_SpawnFruit(WIN *win, int &height, int &width);
 };
+
+#include "Snake.h"

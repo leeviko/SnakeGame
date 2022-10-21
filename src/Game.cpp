@@ -4,6 +4,7 @@ Game::Game()
 {
   gameLoop = TRUE;
   keyPressed = STOP;
+  score = 0;
 }
 
 void Game::m_Start()
@@ -21,6 +22,7 @@ void Game::m_Start()
   std::future<void> getInput = std::async([this]()
                                           { m_Input(std::ref(gameLoop), std::ref(keyPressed)); });
 
+  m_SpawnFruit(&win, SCREEN_HEIGHT, SCREEN_WIDTH);
   // Main game loop
   while (gameLoop == TRUE)
   {
@@ -35,7 +37,9 @@ void Game::m_Start()
       break;
     }
 
-    snake.move();
+    // Print score
+    mvprintw((LINES - SCREEN_HEIGHT) / 2 - 1, (COLS - SCREEN_WIDTH) / 2 + 1, "%s%d", "Score: ", score);
+    snake.move(&win, m_SpawnFruit, SCREEN_HEIGHT, SCREEN_WIDTH, score);
   }
 
   endwin();

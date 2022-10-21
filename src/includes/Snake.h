@@ -7,5 +7,5 @@ public:
   SDirection *sDir;
 
   Snake();
-  void move();
+  void move(WIN *win, void m_SpawnFruit(WIN *win, int &height, int &width), int &height, int &width, int &score);
 };

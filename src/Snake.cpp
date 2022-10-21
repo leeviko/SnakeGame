@@ -10,7 +10,7 @@ Snake::Snake()
   sDir;
 }
 
-void Snake::move()
+void Snake::move(WIN *win, void m_SpawnFruit(WIN *win, int &height, int &width), int &height, int &width, int &score)
 {
   int prevX = this->x;
   int prevY = this->y;
@@ -34,8 +34,15 @@ void Snake::move()
   }
   std::this_thread::sleep_for(std::chrono::milliseconds(250));
 
+  if ('X' == mvinch(this->y, this->x))
+  {
+    score++;
+    length++;
+
+    m_SpawnFruit(win, height, width);
+  }
+
   mvprintw(prevY, prevX, "%c", ' '); // Clear previous position
   mvprintw(this->y, this->x, "%c", 'O');
-
   refresh();
 }
