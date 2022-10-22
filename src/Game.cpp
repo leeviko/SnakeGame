@@ -19,6 +19,8 @@ void Game::m_Start()
   snake.x = COLS / 2;
   snake.y = LINES / 2;
 
+  snake.body.push_back({snake.y, snake.x});
+
   std::future<void> getInput = std::async([this]()
                                           { m_Input(std::ref(gameLoop), std::ref(keyPressed)); });
 
@@ -26,12 +28,12 @@ void Game::m_Start()
   // Main game loop
   while (gameLoop == TRUE)
   {
-    if (snake.x < win.startx || snake.x > win.startx + SCREEN_WIDTH)
+    if (snake.x <= win.startx || snake.x >= win.startx + SCREEN_WIDTH)
     {
       gameLoop = FALSE;
       break;
     }
-    else if (snake.y < win.starty || snake.y > win.starty + SCREEN_HEIGHT)
+    else if (snake.y <= win.starty || snake.y >= win.starty + SCREEN_HEIGHT)
     {
       gameLoop = FALSE;
       break;
@@ -39,7 +41,7 @@ void Game::m_Start()
 
     // Print score
     mvprintw((LINES - SCREEN_HEIGHT) / 2 - 1, (COLS - SCREEN_WIDTH) / 2 + 1, "%s%d", "Score: ", score);
-    snake.move(&win, m_SpawnFruit, SCREEN_HEIGHT, SCREEN_WIDTH, score);
+    snake.move(&win, m_SpawnFruit, SCREEN_HEIGHT, SCREEN_WIDTH, score, gameLoop);
   }
 
   endwin();
@@ -96,16 +98,20 @@ void Game::m_Input(bool &gameLoop, SDirection &keyPressed)
       gameLoop = FALSE;
       break;
     case 'w':
-      keyPressed = UP;
+      if(keyPressed != DOWN)
+        keyPressed = UP;
       break;
     case 'a':
-      keyPressed = LEFT;
+      if(keyPressed != RIGHT)
+        keyPressed = LEFT;
       break;
     case 's':
-      keyPressed = DOWN;
+      if(keyPressed != UP)
+        keyPressed = DOWN;
       break;
     case 'd':
-      keyPressed = RIGHT;
+      if(keyPressed != LEFT)
+        keyPressed = RIGHT;
       break;
     default:
       break;
@@ -123,7 +129,7 @@ void Game::m_SpawnFruit(WIN *win, int &height, int &width)
   std::default_random_engine randGenX(seedX);
 
   std::uniform_int_distribution<int> randomYPos(win->starty + 1, win->starty + height - 1);
-  std::uniform_int_distribution<int> randomXPos(win->startx, win->startx + width);
+  std::uniform_int_distribution<int> randomXPos(win->startx + 1, win->startx + width - 1);
 
   int xPos = randomXPos(randGenY);
   int yPos = randomYPos(randGenX);

@@ -6,11 +6,11 @@ Snake::Snake()
 {
   x = 0;
   y = 0;
-  length = 1;
   sDir;
+  body;
 }
 
-void Snake::move(WIN *win, void m_SpawnFruit(WIN *win, int &height, int &width), int &height, int &width, int &score)
+void Snake::move(WIN *win, void m_SpawnFruit(WIN *win, int &height, int &width), int &height, int &width, int &score, bool &gameLoop)
 {
   int prevX = this->x;
   int prevY = this->y;
@@ -32,17 +32,31 @@ void Snake::move(WIN *win, void m_SpawnFruit(WIN *win, int &height, int &width),
   default:
     break;
   }
-  std::this_thread::sleep_for(std::chrono::milliseconds(250));
 
-  if ('X' == mvinch(this->y, this->x))
+  if(*sDir != STOP)
   {
-    score++;
-    length++;
-
-    m_SpawnFruit(win, height, width);
+    for(Location& l : body)
+    {
+      if(this->x == l.x && this->y == l.y)
+      {
+        gameLoop = FALSE;
+      }
+    }
   }
 
-  mvprintw(prevY, prevX, "%c", ' '); // Clear previous position
-  mvprintw(this->y, this->x, "%c", 'O');
+  if ('X' == mvinch(this->y, this->x))
+  { 
+    score++;
+    m_SpawnFruit(win, height, width);
+  } else {
+    mvprintw(body[body.size()-1].y,body[body.size()-1].x, "%c", ' ');
+    refresh();
+    body.pop_back();
+  }
+
+  body.insert(body.begin(), {this->y, this->x});
+  mvprintw(body[0].y, body[0].x, "%c", 'O');
+
   refresh();
+  std::this_thread::sleep_for(std::chrono::milliseconds(250));
 }
