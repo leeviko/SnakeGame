@@ -4,5 +4,5 @@ int main()
 {
   Game game;
 
-  game.m_Start();
+  game.Start();
 }

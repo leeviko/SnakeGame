@@ -13,5 +13,6 @@ public:
   std::vector<Location> body;
 
   Snake();
-  void move(WIN *win, void m_SpawnFruit(WIN *win, int &height, int &width), int &height, int &width, int &score, bool &gameLoop);
+  ~Snake();
+  void move(WIN *win, void SpawnFruit(WIN *win, int &height, int &width), int &height, int &width, int &score, bool &gameLoop);
 };

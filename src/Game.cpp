@@ -6,8 +6,12 @@ Game::Game()
   keyPressed = STOP;
   score = 0;
 }
+Game::~Game()
+{
+  endwin();
+}
 
-void Game::m_Start()
+void Game::Start()
 {
   int SCREEN_HEIGHT = 16;
   int SCREEN_WIDTH = 36;
@@ -15,16 +19,16 @@ void Game::m_Start()
   Snake snake;
   snake.sDir = &keyPressed;
 
-  m_InitWindow(&win, SCREEN_HEIGHT, SCREEN_WIDTH);
+  InitWindow(&win, SCREEN_HEIGHT, SCREEN_WIDTH);
   snake.x = COLS / 2;
   snake.y = LINES / 2;
 
   snake.body.push_back({snake.y, snake.x});
 
   std::future<void> getInput = std::async([this]()
-                                          { m_Input(std::ref(gameLoop), std::ref(keyPressed)); });
+                                          { Input(std::ref(gameLoop), std::ref(keyPressed)); });
 
-  m_SpawnFruit(&win, SCREEN_HEIGHT, SCREEN_WIDTH);
+  SpawnFruit(&win, SCREEN_HEIGHT, SCREEN_WIDTH);
   // Main game loop
   while (gameLoop == TRUE)
   {
@@ -41,13 +45,13 @@ void Game::m_Start()
 
     // Print score
     mvprintw((LINES - SCREEN_HEIGHT) / 2 - 1, (COLS - SCREEN_WIDTH) / 2 + 1, "%s%d", "Score: ", score);
-    snake.move(&win, m_SpawnFruit, SCREEN_HEIGHT, SCREEN_WIDTH, score, gameLoop);
+    snake.move(&win, SpawnFruit, SCREEN_HEIGHT, SCREEN_WIDTH, score, gameLoop);
   }
 
   endwin();
 }
 
-void Game::m_InitWindow(WIN *win, int height, int width)
+void Game::InitWindow(WIN *win, int height, int width)
 {
   initscr();
   cbreak();
@@ -86,7 +90,7 @@ void Game::m_InitWindow(WIN *win, int height, int width)
   refresh();
 }
 
-void Game::m_Input(bool &gameLoop, SDirection &keyPressed)
+void Game::Input(bool &gameLoop, SDirection &keyPressed)
 {
   int ch;
   while (gameLoop == 1)
@@ -119,7 +123,7 @@ void Game::m_Input(bool &gameLoop, SDirection &keyPressed)
   };
 }
 
-void Game::m_SpawnFruit(WIN *win, int &height, int &width)
+void Game::SpawnFruit(WIN *win, int &height, int &width)
 {
   std::random_device myRandomDevice;
   unsigned seedY = myRandomDevice();

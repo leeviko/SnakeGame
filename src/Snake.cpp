@@ -10,7 +10,9 @@ Snake::Snake()
   body;
 }
 
-void Snake::move(WIN *win, void m_SpawnFruit(WIN *win, int &height, int &width), int &height, int &width, int &score, bool &gameLoop)
+Snake::~Snake(){}
+
+void Snake::move(WIN *win, void SpawnFruit(WIN *win, int &height, int &width), int &height, int &width, int &score, bool &gameLoop)
 {
   int prevX = this->x;
   int prevY = this->y;
@@ -47,7 +49,7 @@ void Snake::move(WIN *win, void m_SpawnFruit(WIN *win, int &height, int &width),
   if ('X' == mvinch(this->y, this->x))
   { 
     score++;
-    m_SpawnFruit(win, height, width);
+    SpawnFruit(win, height, width);
   } else {
     mvprintw(body[body.size()-1].y,body[body.size()-1].x, "%c", ' ');
     refresh();

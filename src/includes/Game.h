@@ -31,11 +31,12 @@ public:
   int score;
 
   Game();
-  void m_InitWindow(WIN *win, int height, int width);
-  void m_Start();
-  void m_End();
-  void m_Input(bool &gameLoop, SDirection &keyPressed);
-  static void m_SpawnFruit(WIN *win, int &height, int &width);
+  ~Game();
+  void InitWindow(WIN *win, int height, int width);
+  void Start();
+  void End();
+  void Input(bool &gameLoop, SDirection &keyPressed);
+  static void SpawnFruit(WIN *win, int &height, int &width);
 };
 
 #include "Snake.h"
